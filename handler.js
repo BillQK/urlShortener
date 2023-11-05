@@ -18,7 +18,7 @@ module.exports.registerUser = async (event) => {
     await userManager.saveUser(user);
     return createResponse(200, user);
   } catch (error) {
-    return createResponse(400, { messge: error.message });
+    return createResponse(400, { message: error.message });
   }
 };
 
