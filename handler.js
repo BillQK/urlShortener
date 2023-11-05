@@ -18,7 +18,7 @@ module.exports.registerUser = async (event) => {
     await userManager.saveUser(user);
     return createResponse(200, user);
   } catch (error) {
-    return createResponse(400, error);
+    return createResponse(400, {messge : error.message});
   }
 };
 
@@ -93,6 +93,30 @@ const processUrl = async (codeLength, longUrl, userID) => {
     throw error;
   }
 };
+
+module.exports.getHistory = async (event) => {
+  const userID = event.pathParameters.userID;
+  
+  if (!userID) {
+    return createResponse(400, { message: "Missing userID" });
+  }
+
+  try {
+    const userExist = await userManager.checkUserIDExist(userID); 
+    if (userExist) {
+      const userUrls = await urlManager.getUrls(userID);
+
+      return createResponse(200, {
+        message: `Success`, 
+        userID: userID, 
+        urls: userUrls
+      });
+    }
+  }catch(error) {
+    return createResponse(400, {message: error.message});
+  }
+}
+
 /**
  * Redirects to the original URL.
  * @param {Object} event - The event object.
@@ -123,7 +147,7 @@ module.exports.redirectUrl = async (event) => {
  * @param {Object} message - The response message.
  * @returns {Object} - The response object.
  */
-function createResponse(statusCode, message) {
+const createResponse = (statusCode, message) => {
   const response = {
     statusCode: statusCode,
     body: JSON.stringify(message),

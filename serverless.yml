@@ -36,6 +36,7 @@ provider:
           Resource:
             - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/usersTable
             - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/urlsTable
+            - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/urlsTable/index/UserIndex
 
 functions:
   registerUser:
@@ -47,7 +48,6 @@ functions:
           cors: true
     environment:
       userTableName: usersTable
-
   shortenUrl:
     handler: handler.shortenUrl
     events:
@@ -59,6 +59,16 @@ functions:
       urlTableName: urlsTable
       userTableName: usersTable
       API_END_POINT: https://uovktf6084.execute-api.us-east-1.amazonaws.com/dev
+  getHistory:
+    handler: handler.getHistory
+    events:
+      - http:
+          path: /history/{userID}
+          method: get
+          cors: true
+    environment: 
+      urlTableName: urlsTable
+      userTableName: usersTable
   redirectUrl:
     handler: handler.redirectUrl
     events:

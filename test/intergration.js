@@ -29,6 +29,7 @@ describe("URL Shortener Service API Integration Tests", function () {
       })
       .end(function (err, res) {
         expect(res).to.have.status(200);
+        expect(res.body).to.have.property("userID");
         expect(res.body).to.have.property("tier").that.equals(1);
         userOneID = res.body.userID;
         done();
@@ -47,6 +48,7 @@ describe("URL Shortener Service API Integration Tests", function () {
       })
       .end(function (err, res) {
         expect(res).to.have.status(200);
+        expect(res.body).to.have.property("userID");
         expect(res.body).to.have.property("createAt");
         expect(res.body).to.have.property("tier").that.equals(2);
         userTwoID = res.body.userID;
@@ -65,6 +67,7 @@ describe("URL Shortener Service API Integration Tests", function () {
         })
         .end(function (err, res) {
           expect(res).to.have.status(200);
+          expect(res.body).to.have.property("userID");
           expect(res.body).to.have.property("createAt");
           expect(res.body).to.have.property("tier").that.equals(3);
           userThreeID = res.body.userID;
@@ -83,6 +86,7 @@ describe("URL Shortener Service API Integration Tests", function () {
       .send({})
       .end(function (err, res) {
         expect(res).to.have.status(200);
+        expect(res.body).to.have.property("userID");
         expect(res.body).to.have.property("tier").that.equals(3);
         userID = res.body.userID;
         done();
@@ -189,6 +193,25 @@ describe("URL Shortener Service API Integration Tests", function () {
         done();
       });
   });
+
+
+  /**
+   * Test case: should get the userOne history.
+   */
+  it("should get the userOne history", async function() {
+    this.timeout(10000); // Increase timeout for the test case since it involves multiple requests
+
+    const res = await chai.request(apiEndpoint)
+      .get(`/history/${userOneID}`)
+      
+
+    expect(res).to.have.status(200);
+    expect(res.body).to.have.property('message').that.includes('Success');
+    expect(res.body).to.have.property('userID').that.equals(userOneID);
+    expect(res.body).to.have.property('urls').that.is.an('array');
+  });
+
+
   tier1Limit = 20
   it(`should only allow a user with Tier 1 to make ${tier1Limit} requests`, async function() {
     this.timeout(10000); // Increase timeout for the test case since it involves multiple requests

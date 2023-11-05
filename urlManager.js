@@ -12,7 +12,7 @@ const TABLE_NAME = process.env.urlTableName;
  * @returns {string} - The generated code.
  * @throws {Error} - If the length is lower than 6.
  */
-function generateUniqueCode(length) {
+const generateUniqueCode = (length) => {
   // Check if the length is lower than 6
   if (length < 6) {
     throw new Error("Length can't not be lower than 6");
@@ -55,6 +55,30 @@ module.exports.saveUrl = async (urlID, longUrl, userID) => {
   try {
     await dynamo.put(params).promise();
     return { success: true, item: urlItem };
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * Retrieves the URLs associated with the specified user ID.
+ * @param {string} userID - The user ID.
+ * @returns {Promise<Array>} - The URLs associated with the user ID.
+ * @throws {Error} - If there is an error retrieving the URLs.
+ */
+module.exports.getUrls = async (userID) => {
+  const params = {
+    TableName: TABLE_NAME,
+    IndexName: "UserIndex",
+    KeyConditionExpression: "userID = :userID",
+    ExpressionAttributeValues: {
+      ":userID": userID,
+    },
+  };
+
+  try {
+    const result = await dynamo.query(params).promise();
+    return result.Items;
   } catch (error) {
     throw error;
   }
