@@ -1,0 +1,104 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+# We've included some commented out config examples here.
+# Just uncomment any of them to get that config option.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+#
+# Happy Coding!
+
+service: urlshotener
+# app and org for use with dashboard.serverless.com
+# app: url-shortener
+# org: kigo4710
+
+# You can pin your service to only deploy with a specific Serverless version
+# Check out our docs for more details
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:Query # if you need to query the history
+            - dynamodb:UpdateItem # if you need to increment counters, etc.
+          Resource:
+            - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/usersTable
+            - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/urlsTable
+
+functions:
+  registerUser:
+    handler: handler.registerUser
+    events:
+      - http:
+          path: register
+          method: post
+          cors: true
+    environment:
+      userTableName: usersTable
+
+  shortenUrl:
+    handler: handler.shortenUrl
+    events:
+      - http:
+          path: shorten
+          method: post
+          cors: true
+    environment:
+      urlTableName: urlsTable
+      userTableName: usersTable
+      API_END_POINT: https://uovktf6084.execute-api.us-east-1.amazonaws.com/dev
+  redirectUrl:
+    handler: handler.redirectUrl
+    events:
+      - http:
+          path: /{shortUrl}
+          method: get
+          cors: true
+    environment:
+      urlTableName: urlsTable
+resources:
+  Resources:
+    usersTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: usersTable
+        AttributeDefinitions:
+          - AttributeName: userID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userID
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    urlsTable:
+      Type: "AWS::DynamoDB::Table"
+      Properties:
+        TableName: urlsTable
+        AttributeDefinitions:
+          - AttributeName: urlID
+            AttributeType: S
+          - AttributeName: userID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: urlID
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: UserIndex
+            KeySchema:
+              - AttributeName: userID
+                KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+        BillingMode: PAY_PER_REQUEST
