@@ -31,8 +31,8 @@ provider:
           Action:
             - dynamodb:PutItem
             - dynamodb:GetItem
-            - dynamodb:Query # if you need to query the history
-            - dynamodb:UpdateItem # if you need to increment counters, etc.
+            - dynamodb:Query 
+            - dynamodb:UpdateItem
           Resource:
             - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/usersTable
             - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/urlsTable

@@ -46,9 +46,31 @@ Once the URL Shortener Service is deployed, you can use the following API endpoi
 - `POST /shorten`: Shorten a URL for a specific user.
 - `GET /shortened-url/{code}`: Retrieve the shortened URL for a specific code.
 
+To use the URL Shortener Service, follow these steps:
+
+1. Start the server: `npm start`
+2. Access the service through the provided API endpoints.
+3. Register a new user by making a POST request to `/register` with the desired tier (1, 2, or 3).
+4. Shorten a URL by making a POST request to `/shorten` with the user ID and the URL to be shortened.
+5. Retrieve the shortened URL by making a GET request to `/shortened-url/{code}`, where `{code}` is the code generated for the shortened URL.
+6. Access the shortened URL and get redirected to the original URL.
+
 Make sure to replace `{code}` with the actual code generated for the shortened URL.
 
 ## Testing
 
 To run the tests for the URL Shortener Service, use the following command:
-- `npm test` (Hardcode the apiEndpoint. RMB to change it to your endPoints)
+- `npm test` (!important Hardcoded the apiEndpoint for testing. Change it to your endPoints)
+
+The tests are written using the Mocha testing framework and Chai assertion library.
+
+
+## Project is Live 
+
+1. Make a POST request to the endpoint https://uovktf6084.execute-api.us-east-1.amazonaws.com/dev/register to register for a userID and tier. If you don't provide a request body, your default tier will be set to 3.
+2. Once registered, you can generate a shortened URL by making a POST request to the endpoint https://uovktf6084.execute-api.us-east-1.amazonaws.com/dev/shorten with the userID in the request body. You can also specify the desired length of the shortened URL, which must be greater than 6 characters. If you don't provide a length, the default will be set to 7.
+3. The API will respond with a shortened link that you can use to redirect to the original link.
+
+By following these steps, you can register for a userID and tier, generate a shortened URL using your userID, and use the shortened link to redirect to the original link.
+
+Note: The generated link is still long due to AWS pre-generated API, this can be shorten by customize the domain.
