@@ -75,6 +75,3 @@ The tests are written using the Mocha testing framework and Chai assertion libra
 By following these steps, you can register for a userID and tier, generate a shortened URL using your userID, and use the shortened link to redirect to the original link.
 
 Note: The generated link is still long due to AWS pre-generated API, this can be shorten by customize the domain.
-
-
-//TODO : Add query userID history
