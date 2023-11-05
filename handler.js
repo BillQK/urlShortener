@@ -93,7 +93,11 @@ const processUrl = async (codeLength, longUrl, userID) => {
     throw error;
   }
 };
-
+/**
+ * Handles the getHistory request by retrieving the user's URL history and returning a response object.
+ * @param {Object} event - The event object.
+ * @returns {Object} - The response object.
+ */
 module.exports.getHistory = async (event) => {
   const userID = event.pathParameters.userID;
   
@@ -115,7 +119,7 @@ module.exports.getHistory = async (event) => {
   }catch(error) {
     return createResponse(400, {message: error.message});
   }
-}
+};
 
 /**
  * Redirects to the original URL.
@@ -154,4 +158,4 @@ const createResponse = (statusCode, message) => {
   };
 
   return response;
-}
+};

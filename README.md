@@ -44,6 +44,7 @@ Once the URL Shortener Service is deployed, you can use the following API endpoi
 
 - `POST /register`: Register a new user with the desired tier.
 - `POST /shorten`: Shorten a URL for a specific user.
+- `GET /history/{userID}`: Retrieve the urls for a specific userID.
 - `GET /shortened-url/{code}`: Retrieve the shortened URL for a specific code.
 
 To use the URL Shortener Service, follow these steps:

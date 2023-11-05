@@ -5,6 +5,7 @@ const dynamo = new AWS.DynamoDB.DocumentClient();
 const crypto = require("crypto");
 
 const TABLE_NAME = process.env.urlTableName;
+const BASE_URL = process.env.API_END_POINT;
 
 /**
  * Generates a unique code of the specified length.
@@ -44,6 +45,7 @@ module.exports.createUrlID = (length) => {
 module.exports.saveUrl = async (urlID, longUrl, userID) => {
   const urlItem = {
     urlID: urlID,
+    shortUrl: `${BASE_URL}/${urlID}`,
     longUrl: longUrl,
     userID: userID,
     createAt: new Date().toISOString(),
@@ -78,7 +80,8 @@ module.exports.getUrls = async (userID) => {
 
   try {
     const result = await dynamo.query(params).promise();
-    return result.Items;
+    const shortUrls = result.Items.map(item => item.shortUrl);
+    return shortUrls;
   } catch (error) {
     throw error;
   }
