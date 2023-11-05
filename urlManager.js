@@ -21,7 +21,7 @@ const generateUniqueCode = (length) => {
   const bytes = Math.ceil(length / 2);
   const buffer = crypto.randomBytes(bytes).toString("hex");
   return buffer.slice(0, length);
-}
+};
 
 /**
  * Creates a unique URL ID of the specified length.
@@ -80,7 +80,7 @@ module.exports.getUrls = async (userID) => {
 
   try {
     const result = await dynamo.query(params).promise();
-    const shortUrls = result.Items.map(item => item.shortUrl);
+    const shortUrls = result.Items.map((item) => item.shortUrl);
     return shortUrls;
   } catch (error) {
     throw error;

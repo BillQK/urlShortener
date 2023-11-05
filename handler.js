@@ -18,7 +18,7 @@ module.exports.registerUser = async (event) => {
     await userManager.saveUser(user);
     return createResponse(200, user);
   } catch (error) {
-    return createResponse(400, {messge : error.message});
+    return createResponse(400, { messge: error.message });
   }
 };
 
@@ -43,27 +43,26 @@ module.exports.shortenUrl = async (event) => {
       const { userTier, userRequestCount } = await userManager.getUserData(
         userID
       );
-
+      let maxRequestCount;
       switch (userTier) {
         case 1:
-          if (userRequestCount > 20) {
-            throw new Error(`Exceed Maximum Request for Tier 1`);
-          } 
+          maxRequestCount = 20;
           break;
         case 2:
-          if (userRequestCount > 10) {
-            throw new Error(`Exceed Maximum Request for Tier 2`);
-          }
+          maxRequestCount = 10;
           break;
         case 3:
-          if (userRequestCount > 5) {
-            throw new Error(`Exceed Maximum Request for Tier 3`);
-          } 
+          maxRequestCount = 5;
           break;
         default:
           return createResponse(400, { message: "Unknown Tier!" });
       }
-      return await processUrl(codeLength, longUrl, userID);
+
+      if (userRequestCount >= maxRequestCount) {
+        throw new Error(`Exceed Maximum Request for Tier ${userTier}`);
+      } else {
+        return await processUrl(codeLength, longUrl, userID);
+      }
     }
   } catch (error) {
     return createResponse(400, { message: error.message });
@@ -88,7 +87,6 @@ const processUrl = async (codeLength, longUrl, userID) => {
       urlID: shortUrlID,
       url: `${BASE_URL}/${shortUrlID}`,
     });
-
   } catch (error) {
     throw error;
   }
@@ -100,24 +98,24 @@ const processUrl = async (codeLength, longUrl, userID) => {
  */
 module.exports.getHistory = async (event) => {
   const userID = event.pathParameters.userID;
-  
+
   if (!userID) {
     return createResponse(400, { message: "Missing userID" });
   }
 
   try {
-    const userExist = await userManager.checkUserIDExist(userID); 
+    const userExist = await userManager.checkUserIDExist(userID);
     if (userExist) {
       const userUrls = await urlManager.getUrls(userID);
 
       return createResponse(200, {
-        message: `Success`, 
-        userID: userID, 
-        urls: userUrls
+        message: `Success`,
+        userID: userID,
+        urls: userUrls,
       });
     }
-  }catch(error) {
-    return createResponse(400, {message: error.message});
+  } catch (error) {
+    return createResponse(400, { message: error.message });
   }
 };
 

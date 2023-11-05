@@ -61,12 +61,12 @@ Make sure to replace `{code}` with the actual code generated for the shortened U
 ## Testing
 
 To run the tests for the URL Shortener Service, use the following command:
+
 - `npm test` (!important Hardcoded the apiEndpoint for testing. Change it to your endPoints)
 
 The tests are written using the Mocha testing framework and Chai assertion library.
 
-
-## Project is Live 
+## Project is Live
 
 1. Make a POST request to the endpoint https://uovktf6084.execute-api.us-east-1.amazonaws.com/dev/register to register for a userID and tier. If you don't provide a request body, your default tier will be set to 3.
 2. Once registered, you can generate a shortened URL by making a POST request to the endpoint https://uovktf6084.execute-api.us-east-1.amazonaws.com/dev/shorten with the userID in the request body. You can also specify the desired length of the shortened URL, which must be greater than 6 characters. If you don't provide a length, the default will be set to 7.

@@ -31,7 +31,7 @@ provider:
           Action:
             - dynamodb:PutItem
             - dynamodb:GetItem
-            - dynamodb:Query 
+            - dynamodb:Query
             - dynamodb:UpdateItem
           Resource:
             - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/usersTable
@@ -66,7 +66,7 @@ functions:
           path: /history/{userID}
           method: get
           cors: true
-    environment: 
+    environment:
       urlTableName: urlsTable
       userTableName: usersTable
   redirectUrl:

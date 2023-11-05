@@ -1,6 +1,6 @@
 const chai = require("chai");
 const chaiHttp = require("chai-http");
-require('dotenv').config();
+require("dotenv").config();
 const expect = chai.expect;
 
 chai.use(chaiHttp);
@@ -55,27 +55,26 @@ describe("URL Shortener Service API Integration Tests", function () {
         done();
       });
   });
-    /**
+  /**
    * Test case: should register a new user with the tier 3.
    */
-    it("should register a new user with the tier 3", function (done) {
-      chai
-        .request(apiEndpoint)
-        .post("/register")
-        .send({
-          tier: 3,
-        })
-        .end(function (err, res) {
-          expect(res).to.have.status(200);
-          expect(res.body).to.have.property("userID");
-          expect(res.body).to.have.property("createAt");
-          expect(res.body).to.have.property("tier").that.equals(3);
-          userThreeID = res.body.userID;
-          done();
-        });
-    });
-    
-  
+  it("should register a new user with the tier 3", function (done) {
+    chai
+      .request(apiEndpoint)
+      .post("/register")
+      .send({
+        tier: 3,
+      })
+      .end(function (err, res) {
+        expect(res).to.have.status(200);
+        expect(res.body).to.have.property("userID");
+        expect(res.body).to.have.property("createAt");
+        expect(res.body).to.have.property("tier").that.equals(3);
+        userThreeID = res.body.userID;
+        done();
+      });
+  });
+
   /**
    * Test case: should register a new user without a tier with the default 1.
    */
@@ -194,116 +193,115 @@ describe("URL Shortener Service API Integration Tests", function () {
       });
   });
 
-
   /**
    * Test case: should get the userOne history.
    */
-  it("should get the userOne history", async function() {
+  it("should get the userOne history", async function () {
     this.timeout(10000); // Increase timeout for the test case since it involves multiple requests
 
-    const res = await chai.request(apiEndpoint)
-      .get(`/history/${userOneID}`)
-      
+    const res = await chai.request(apiEndpoint).get(`/history/${userOneID}`);
 
     expect(res).to.have.status(200);
-    expect(res.body).to.have.property('message').that.includes('Success');
-    expect(res.body).to.have.property('userID').that.equals(userOneID);
-    expect(res.body).to.have.property('urls').that.is.an('array');
+    expect(res.body).to.have.property("message").that.includes("Success");
+    expect(res.body).to.have.property("userID").that.equals(userOneID);
+    expect(res.body).to.have.property("urls").that.is.an("array");
   });
 
-
-  tier1Limit = 20
-  it(`should only allow a user with Tier 1 to make ${tier1Limit} requests`, async function() {
+  tier1Limit = 20;
+  it(`should only allow a user with Tier 1 to make ${tier1Limit} requests`, async function () {
     this.timeout(10000); // Increase timeout for the test case since it involves multiple requests
 
     // Make the maximum number of allowed requests
-    for (let i = 0; i <= tier1Limit; i++) {
-      const res = await chai.request(apiEndpoint)
-        .post('/shorten')
+    for (let i = 0; i < tier1Limit; i++) {
+      const res = await chai
+        .request(apiEndpoint)
+        .post("/shorten")
         .send({
           userID: userOneID,
           url: `http://example.com/${i}`,
-          urlLength: 7
+          urlLength: 7,
         });
 
       expect(res).to.have.status(200);
-      expect(res.body).to.have.property('urlID');
+      expect(res.body).to.have.property("urlID");
     }
 
     // Attempt one more request that should fail due to exceeding the limit
-    const resExceed = await chai.request(apiEndpoint)
-      .post('/shorten')
-      .send({
-        userID: userOneID,
-        url: "http://example.com/exceed",
-        urlLength: 7
-      });
+    const resExceed = await chai.request(apiEndpoint).post("/shorten").send({
+      userID: userOneID,
+      url: "http://example.com/exceed",
+      urlLength: 7,
+    });
 
     expect(resExceed).to.have.status(400);
-    expect(resExceed.body).to.have.property('message').that.includes('Exceed Maximum Request');
+    expect(resExceed.body)
+      .to.have.property("message")
+      .that.includes("Exceed Maximum Request");
   });
 
-  tier2Limit = 10
-  it(`should only allow a user with Tier 2 to make ${tier2Limit} requests`, async function() {
+  tier2Limit = 10;
+  it(`should only allow a user with Tier 2 to make ${tier2Limit} requests`, async function () {
     this.timeout(10000); // Increase timeout for the test case since it involves multiple requests
 
     // Make the maximum number of allowed requests
-    for (let i = 0; i <= tier2Limit; i++) {
-      const res = await chai.request(apiEndpoint)
-        .post('/shorten')
+    for (let i = 0; i < tier2Limit; i++) {
+      const res = await chai
+        .request(apiEndpoint)
+        .post("/shorten")
         .send({
           userID: userTwoID,
           url: `http://example.com/${i}`,
-          urlLength: 7
+          urlLength: 7,
         });
 
       expect(res).to.have.status(200);
-      expect(res.body).to.have.property('urlID');
+      expect(res.body).to.have.property("urlID");
     }
 
     // Attempt one more request that should fail due to exceeding the limit
-    const resExceed = await chai.request(apiEndpoint)
-      .post('/shorten')
-      .send({
-        userID: userTwoID,
-        url: "http://example.com/exceed",
-        urlLength: 7
-      });
+    const resExceed = await chai.request(apiEndpoint).post("/shorten").send({
+      userID: userTwoID,
+      url: "http://example.com/exceed",
+      urlLength: 7,
+    });
 
     expect(resExceed).to.have.status(400);
-    expect(resExceed.body).to.have.property('message').that.includes('Exceed Maximum Request');
+    expect(resExceed.body)
+      .to.have.property("message")
+      .that.includes("Exceed Maximum Request");
   });
 
-  tier3Limit = 5
-  it(`should only allow a user with Tier 3 to make ${tier3Limit} requests`, async function() {
+  tier3Limit = 5;
+  it(`should only allow a user with Tier 3 to make ${tier3Limit} requests`, async function () {
     this.timeout(10000); // Increase timeout for the test case since it involves multiple requests
 
     // Make the maximum number of allowed requests
-    for (let i = 0; i <= tier3Limit; i++) {
-      const res = await chai.request(apiEndpoint)
-        .post('/shorten')
+    for (let i = 0; i < tier3Limit; i++) {
+      const res = await chai
+        .request(apiEndpoint)
+        .post("/shorten")
         .send({
           userID: userThreeID,
           url: `http://example.com/${i}`,
-          urlLength: 7
+          urlLength: 7,
         });
 
       expect(res).to.have.status(200);
-      expect(res.body).to.have.property('urlID');
+      expect(res.body).to.have.property("urlID");
     }
 
     // Attempt one more request that should fail due to exceeding the limit
-    const resExceed = await chai.request(apiEndpoint)
-      .post('/shorten')
-      .send({
-        userID: userThreeID,
-        url: "http://example.com/exceed",
-        urlLength: 7
-      });
+    const resExceed = await chai.request(apiEndpoint).post("/shorten").send({
+      userID: userThreeID,
+      url: "http://example.com/exceed",
+      urlLength: 7,
+    });
 
     expect(resExceed).to.have.status(400);
-    expect(resExceed.body).to.have.property('message').that.includes('Exceed Maximum Request');
+    expect(resExceed.body)
+      .to.have.property("message")
+      .that.includes("Exceed Maximum Request");
   });
 
-  // Add more tests 
+  // Add more tests
 });
